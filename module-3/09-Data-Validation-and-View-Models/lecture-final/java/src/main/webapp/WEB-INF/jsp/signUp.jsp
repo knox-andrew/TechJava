@@ -13,7 +13,7 @@
 	</head>
 	<body>	
 		<c:url var="mailingListSubmitUrl" value="/signUp"/>
-		<form:form id="signUp" action="/validation-lecture/signUp" method="POST" modelAttribute="signUp">
+		<form:form id="signUp" action="${mailingListSubmitUrl}" method="POST" modelAttribute="signUp">
 			<div>
 				<label for="name">Name</label>
 				<form:input id="name" name="name" type="text" path="name"/>	
