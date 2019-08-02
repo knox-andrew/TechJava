@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import ReviewService from '@/ReviewService.js'
+
 export default {
   props: {
     apiURL: String,
@@ -45,30 +47,16 @@ export default {
       this.reviewID === 0 ? this.createReview() : this.updateReview();
     },
     createReview() {
-      fetch(this.apiURL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(this.review)
-      })
-      .then(response => {
-        if (response.ok) {
+      ReviewService.addNewReview(this.review)
+        .then(() => {
           this.backToReviews();
-        }
-      })
+        })
     },
     updateReview() {
-
-      fetch(this.apiURL + '/' + this.reviewID, {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(this.review)  
-      })
-      .then(response => {
-        if (response.ok) {
+      ReviewService.updateReview(this.reviewID, this.review)
+        .then(() => {
           this.backToReviews();
-        }
-      })
-
+        })
     }
   },
   computed: {
@@ -81,18 +69,8 @@ export default {
   },
   created() {
     if (this.reviewID != 0) {
-      fetch(this.apiURL + '/' + this.reviewID)
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          else {
-            throw 'Failed to receive review data.'
-          }
-        })
-        .then(parsedData => {
-          this.review = parsedData;
-        })
+      ReviewService.getReview(this.reviewID)
+        .then(review => this.review = review);
     }
   }
 };

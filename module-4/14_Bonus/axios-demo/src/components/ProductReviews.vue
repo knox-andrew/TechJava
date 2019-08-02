@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import ReviewService from '@/ReviewService.js'
+
 export default {
   name: "ProductReviews",
   props: {
@@ -44,13 +46,11 @@ export default {
     },
     deleteReview(id) {
 
-      fetch(`${this.apiURL}/${id}`, {method: 'DELETE'})
-        .then(response => {
-          if (response.ok) {
-            const index = this.reviews.map(review => review.id).indexOf(id);
-            this.reviews.splice(index, 1);
-          }
-        })
+      ReviewService.deleteReview(id)
+        .then(() => {
+          const index = this.reviews.map(review => review.id).indexOf(id);
+          this.reviews.splice(index, 1);
+        });
 
     },
     formatDate(d) {
@@ -59,15 +59,10 @@ export default {
     }
   },
   created() {
-
-    fetch(this.apiURL)
-      .then(response => {
-        return response.json();
-      })
-      .then(parsedData => {
-        this.reviews = parsedData;
-      })
-      .catch(err => console.log(err));
+    ReviewService.getReviews()
+      .then((reviews) => {
+        this.reviews = reviews;
+      });
   }
 };
 </script>
